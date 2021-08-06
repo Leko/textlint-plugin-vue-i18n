@@ -1,0 +1,35 @@
+{
+  "name": "textlint-plugin-vue-i18n",
+  "description": "textlint plugin to extract texts from Vue i18n custom blocks",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepare": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@textlint/ast-node-types": "^12.0.0",
+    "json-to-ast": "^2.1.0"
+  },
+  "peerDependencies": {
+    "vue-template-compiler": "*"
+  },
+  "devDependencies": {
+    "@textlint/ast-tester": "^12.0.2",
+    "@textlint/kernel": "^12.0.2",
+    "@textlint/types": "^12.0.2",
+    "@types/jest": "^26.0.24",
+    "@types/json-to-ast": "^2.1.2",
+    "jest": "^27.0.6",
+    "prettier": "^2.3.2",
+    "textlint-rule-no-todo": "^2.0.1",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5",
+    "vue-template-compiler": "^2.6.14"
+  }
+}
