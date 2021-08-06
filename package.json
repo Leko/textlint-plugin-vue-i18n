@@ -1,7 +1,7 @@
 {
   "name": "textlint-plugin-vue-i18n",
   "description": "textlint plugin to extract texts from Vue i18n custom blocks",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
