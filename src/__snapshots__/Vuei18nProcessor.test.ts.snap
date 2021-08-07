@@ -7,48 +7,7 @@ Array [
     "fix": undefined,
     "index": 108,
     "line": 10,
-    "message": "Found TODO: 'TODO: this is TODO\\"
-  },
-  \\"ja\\": {
-    \\"deep\\": {
-      \\"nested\\": {
-        \\"greeting\\": \\"こんにちは\\"
-      }
-    },
-    \\"todo\\": \\"TODO: これはTODOです\\"
-  }
-}
-</i18n>
-
-<template>
-  <span>{{ $t('deep.nested.greeting') }}</span>
-</te'",
-    "ruleId": "no-todo",
-    "severity": 2,
-    "type": "lint",
-  },
-  Object {
-    "column": 14,
-    "fix": undefined,
-    "index": 108,
-    "line": 10,
-    "message": "Found TODO: 'TODO: this is TODO\\"
-  },
-  \\"ja\\": {
-    \\"deep\\": {
-      \\"nested\\": {
-        \\"greeting\\": \\"こんにちは\\"
-      }
-    },
-    \\"todo\\": \\"TODO: これはTODOです\\"
-  }
-}
-</i18n>
-
-<template>
-  <span>{{ $t('deep.nested.greeting') }}</span>
-</template>
-'",
+    "message": "Found TODO: 'TODO: this is TODO\\"'",
     "ruleId": "no-todo",
     "severity": 2,
     "type": "lint",
@@ -58,15 +17,7 @@ Array [
     "fix": undefined,
     "index": 231,
     "line": 18,
-    "message": "Found TODO: 'TODO: これはTODOです\\"
-  }
-}
-</i18n>
-
-<template>
-  <span>{{ $t('deep.nested.greeting') }}</span>
-</template>
-'",
+    "message": "Found TODO: 'TODO: これはTODOです\\"'",
     "ruleId": "no-todo",
     "severity": 2,
     "type": "lint",

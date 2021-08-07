@@ -44,7 +44,7 @@ export function fromLiteralNode(
 ): TxtParentNode {
   const range: TextNodeRange = [
     parent.range[0] + node.loc!.start.offset,
-    parent.range[1] + node.loc!.end.offset,
+    parent.range[0] + node.loc!.end.offset,
   ]
   const loc: TxtNodeLineLocation = {
     start: offset(node.loc!.start, parent.loc.start),

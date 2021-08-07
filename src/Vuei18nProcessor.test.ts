@@ -3,6 +3,11 @@ import path from 'path'
 import { isTxtAST, test as validateTextlintASTNode } from '@textlint/ast-tester'
 import { TextlintKernel, TextlintPluginOptions } from '@textlint/kernel'
 import plugin from './index'
+import {
+  TextNodeRange,
+  TxtNode,
+  TxtNodeLineLocation,
+} from '@textlint/ast-node-types'
 
 async function lintFile(
   filePath: string,
@@ -34,14 +39,6 @@ function lintText(
   })
 }
 
-async function parseFile(
-  filePath: string,
-  options: TextlintPluginOptions = {}
-) {
-  const text = await fsPromises.readFile(filePath, 'utf-8')
-  return parseText(text, filePath, options)
-}
-
 function parseText(
   text: string,
   filePath?: string,
@@ -51,12 +48,39 @@ function parseText(
   return processor.processor('.vue').preProcess(text, filePath)
 }
 
+function locToRange(text: string, loc: TxtNodeLineLocation): TextNodeRange {
+  const lines = text.split('\n')
+  return [
+    (
+      lines.slice(0, loc.start.line - 1).join('\n') +
+      lines[loc.start.line - 1]?.slice(0, loc.start.column)
+    ).length + 1,
+    (
+      lines.slice(0, loc.end.line - 1).join('\n') +
+      lines[loc.end.line - 1]?.slice(0, loc.end.column)
+    ).length + 1,
+  ]
+}
+
+function validateLocation(text: string, node: TxtNode) {
+  for (let n of node['children'] ?? []) {
+    validateLocation(text, n)
+  }
+  if (node['raw']) {
+    expect(text.slice(...node.range)).toEqual(node['raw'])
+
+    const range = locToRange(text, node.loc)
+    expect(text.slice(...range)).toEqual(node['raw'])
+  }
+}
+
 describe('Vuei18nProcessor', () => {
   it('parses JSON in the i18n block', async () => {
-    const node = await parseFile(
-      path.join(__dirname, '..', 'fixtures', 'test.vue')
-    )
+    const filePath = path.join(__dirname, '..', 'fixtures', 'test.vue')
+    const text = await fsPromises.readFile(filePath, 'utf-8')
+    const node = await parseText(text, filePath)
     validateTextlintASTNode(node)
+    validateLocation(text, node)
     expect(isTxtAST(node)).toEqual(true)
     expect(node['children'].length).toEqual(4)
     expect(node['children'][0].children[0].value).toEqual('Hello')
@@ -67,11 +91,11 @@ describe('Vuei18nProcessor', () => {
     )
   })
   it('parses specific locale in the JSON in the i18n block', async () => {
-    const node = await parseFile(
-      path.join(__dirname, '..', 'fixtures', 'test.vue'),
-      { locales: ['ja'] }
-    )
+    const filePath = path.join(__dirname, '..', 'fixtures', 'test.vue')
+    const text = await fsPromises.readFile(filePath, 'utf-8')
+    const node = await parseText(text, filePath, { locales: ['ja'] })
     validateTextlintASTNode(node)
+    validateLocation(text, node)
     expect(isTxtAST(node)).toEqual(true)
     expect(node['children'].length).toEqual(2)
     expect(node['children'][0].children[0].value).toEqual('こんにちは')
@@ -80,10 +104,11 @@ describe('Vuei18nProcessor', () => {
     )
   })
   it('returns empty node if the file does not have i18n block', async () => {
-    const node = await parseFile(
-      path.join(__dirname, '..', 'fixtures', 'test-no-i18n.vue')
-    )
+    const filePath = path.join(__dirname, '..', 'fixtures', 'test-no-i18n.vue')
+    const text = await fsPromises.readFile(filePath, 'utf-8')
+    const node = await parseText(text, filePath)
     validateTextlintASTNode(node)
+    validateLocation(text, node)
     expect(isTxtAST(node)).toEqual(true)
   })
 
