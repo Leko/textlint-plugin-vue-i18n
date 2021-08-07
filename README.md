@@ -24,7 +24,7 @@ Add this plugin into the plugins field in the `.textlintrc`.
 
 ### Options
 
-- `locales` (`string[]`): List of locales. If you specify it, this plugin will retrieve texts only in the locales. Default: `null` (retrieve all locales)
+- `locales` (optional, `string[]`): List of locales. If you specify it, this plugin will retrieve texts only in the locales. Default: `null` (retrieve all locales)
 
 ## License
 
