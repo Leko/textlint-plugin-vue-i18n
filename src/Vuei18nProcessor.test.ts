@@ -45,7 +45,7 @@ function parseText(
   options: TextlintPluginOptions = {}
 ) {
   const processor = new plugin.Processor(options)
-  return processor.processor('.vue').preProcess(text, filePath)
+  return processor.processor().preProcess(text, filePath)
 }
 
 function locToRange(text: string, loc: TxtNodeLineLocation): TextNodeRange {
@@ -54,7 +54,7 @@ function locToRange(text: string, loc: TxtNodeLineLocation): TextNodeRange {
     (
       lines.slice(0, loc.start.line - 1).join('\n') +
       lines[loc.start.line - 1]?.slice(0, loc.start.column)
-    ).length + 1,
+    ).length + (loc.start.line > 0 && loc.start.column > 0 ? 1 : 0),
     (
       lines.slice(0, loc.end.line - 1).join('\n') +
       lines[loc.end.line - 1]?.slice(0, loc.end.column)
@@ -110,6 +110,28 @@ describe('Vuei18nProcessor', () => {
     validateTextlintASTNode(node)
     validateLocation(text, node)
     expect(isTxtAST(node)).toEqual(true)
+  })
+  it('parses JSON file if the file matches a resources', async () => {
+    const filePath = path.join(__dirname, '..', 'fixtures', 'test-ja.json')
+    const text = await fsPromises.readFile(filePath, 'utf-8')
+    const node = await parseText(text, filePath, {
+      resources: [filePath],
+    })
+    validateTextlintASTNode(node)
+    validateLocation(text, node)
+    expect(isTxtAST(node)).toEqual(true)
+    expect(node['children'].length).toEqual(1)
+    expect(node['children'][0]['children'].length).toEqual(1)
+    expect(node['children'][0]['children'][0].value).toEqual('朝')
+  })
+  it('does not parse JSON file if the file does not match a resources', async () => {
+    const filePath = path.join(__dirname, '..', 'fixtures', 'test-ja.json')
+    const text = await fsPromises.readFile(filePath, 'utf-8')
+    const node = await parseText(text, filePath)
+    validateTextlintASTNode(node)
+    validateLocation(text, node)
+    expect(isTxtAST(node)).toEqual(true)
+    expect(node['children']).toEqual([])
   })
 
   it('reports nothing if the file does not have i18n block', async () => {

@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@textlint/ast-node-types": "^12.0.0",
-    "json-to-ast": "^2.1.0"
+    "json-to-ast": "^2.1.0",
+    "micromatch": "^4.0.4"
   },
   "peerDependencies": {
     "vue-template-compiler": "*"
@@ -24,6 +25,7 @@
     "@textlint/types": "^12.0.2",
     "@types/jest": "^26.0.24",
     "@types/json-to-ast": "^2.1.2",
+    "@types/micromatch": "^4.0.2",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
     "textlint-rule-no-todo": "^2.0.1",

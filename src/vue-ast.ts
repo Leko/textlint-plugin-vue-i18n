@@ -25,7 +25,7 @@ export function fromSFCBlock(
   }
 }
 
-function rangeToLineLocation(
+export function rangeToLineLocation(
   text: string,
   range: [number, number]
 ): TxtNodeLineLocation {

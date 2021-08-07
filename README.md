@@ -19,7 +19,8 @@ Add this plugin into the plugins field in the `.textlintrc`.
 {
   "plugins": {
     "textlint-plugin-vue-i18n": {
-      "locales": ["ja"]
+      "locales": ["ja"],
+      "resources": ["./locales/*.json"]
     }
   }
 }
@@ -28,6 +29,7 @@ Add this plugin into the plugins field in the `.textlintrc`.
 ### Options
 
 - `locales` (optional, `string[]`): List of locales. If you specify it, this plugin will retrieve texts only in the locales. Default: `null` (retrieve all locales)
+- `resources` (optional, `string[]`): List of [glob](https://github.com/isaacs/node-glob) patterns. If you specify it, this plugin will retrieve texts not only the i18n blocks but also specified JSON files. Default: `[]` (doesn't retrieve a resource)
 
 ## License
 
