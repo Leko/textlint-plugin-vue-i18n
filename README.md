@@ -1,5 +1,8 @@
 # textlint-plugin-vue-i18n
 
+![npm version](https://img.shields.io/npm/v/textlint-plugin-vue-i18n)
+![license](https://img.shields.io/github/license/Leko/textlint-plugin-vue-i18n)
+
 A [textlint](https://github.com/textlint/textlint) plugin to extract texts from [vue-i18n](https://github.com/kazupon/vue-i18n) custom blocks.
 
 ## Install
