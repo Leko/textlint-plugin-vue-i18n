@@ -3,16 +3,10 @@ import {
   TextNodeRange,
   TxtNode,
   TxtNodeLineLocation,
-  TxtNodePosition,
   TxtParentNode,
 } from '@textlint/ast-node-types'
-import type {
-  LiteralNode,
-  Position,
-  PropertyNode,
-  ValueNode,
-} from 'json-to-ast'
-import parseJson from 'json-to-ast'
+import parseJson, { LiteralNode, PropertyNode, ValueNode } from 'json-to-ast'
+import { rangeToLineColumn } from './location'
 
 export function pickLocales(
   jsonStr: string,
@@ -40,22 +34,19 @@ export function getStringNodes(node: ValueNode): LiteralNode[] {
 
 export function fromLiteralNode(
   node: LiteralNode,
-  parent: TxtNode
+  parent: TxtNode,
+  text: string
 ): TxtParentNode {
   const range: TextNodeRange = [
     parent.range[0] + node.loc!.start.offset,
     parent.range[0] + node.loc!.end.offset,
   ]
-  const loc: TxtNodeLineLocation = {
-    start: offset(node.loc!.start, parent.loc.start),
-    end: offset(node.loc!.end, parent.loc.start),
-  }
+  const loc: TxtNodeLineLocation = rangeToLineColumn(text, range)
   return {
     type: ASTNodeTypes.Paragraph,
     raw: node.raw,
     range,
     loc,
-    // parent,
     children: [
       {
         type: ASTNodeTypes.Str,
@@ -65,21 +56,5 @@ export function fromLiteralNode(
         loc,
       },
     ],
-  }
-}
-
-function offset(
-  position: Position,
-  location: TxtNodePosition
-): TxtNodePosition {
-  if (position.line === location.line) {
-    return {
-      line: position.line,
-      column: position.column - 1 + location.column,
-    }
-  }
-  return {
-    line: position.line + location.line - 1,
-    column: position.column - 1,
   }
 }
