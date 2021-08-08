@@ -22,19 +22,16 @@ export class JSONProcessor implements TextlintPluginProcessor {
     return {
       preProcess(text: string, _filePath?: string): TxtNode {
         const range: TextNodeRange = [0, text.length]
-        const rootNode: TxtNode = {
+        const matches: PropertyNode[] = pickLocales(text, null)
+        const children = matches
+          .flatMap((m) => getStringNodes(m.value))
+          .map((n) => fromLiteralNode(n, text))
+
+        return {
           type: ASTNodeTypes.Document,
           raw: text,
           range,
           loc: rangeToLineColumn(text, range),
-        }
-        const matches: PropertyNode[] = pickLocales(rootNode.raw, null)
-        const children = matches
-          .flatMap((m) => getStringNodes(m.value))
-          .map((n) => fromLiteralNode(n, rootNode, text))
-
-        return {
-          ...rootNode,
           children,
         }
       },

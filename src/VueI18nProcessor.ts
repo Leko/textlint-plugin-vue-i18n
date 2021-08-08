@@ -5,7 +5,7 @@ import type {
 import { ASTNodeTypes, TextNodeRange, TxtNode } from '@textlint/ast-node-types'
 import * as micromatch from 'micromatch'
 import { PropertyNode } from 'json-to-ast'
-import { findI18nBlock, fromSFCBlock } from './vue-ast'
+import { findI18nBlock } from './vue-ast'
 import { getStringNodes, fromLiteralNode, pickLocales } from './json-ast'
 import { JSONProcessor } from './JSONProcessor'
 import { rangeToLineColumn } from './location'
@@ -53,14 +53,17 @@ export class VueI18nProcessor implements TextlintPluginProcessor {
         if (!i18nBlock) {
           return getEmptyDoc()
         }
-        const rootNode: TxtNode = fromSFCBlock(text, i18nBlock)
-        const matches: PropertyNode[] = pickLocales(rootNode.raw, locales)
+        const matches: PropertyNode[] = pickLocales(i18nBlock.content, locales)
         const children = matches
           .flatMap((m) => getStringNodes(m.value))
-          .map((n) => fromLiteralNode(n, rootNode, text))
+          .map((n) => fromLiteralNode(n, text, i18nBlock.start!))
+        const range: [number, number] = [0, text.length]
 
         return {
-          ...rootNode,
+          type: ASTNodeTypes.Document,
+          raw: text,
+          range,
+          loc: rangeToLineColumn(text, range),
           children,
         }
       },
