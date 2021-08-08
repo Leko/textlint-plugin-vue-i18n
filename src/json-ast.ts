@@ -1,7 +1,6 @@
 import {
   ASTNodeTypes,
   TextNodeRange,
-  TxtNode,
   TxtNodeLineLocation,
   TxtParentNode,
 } from '@textlint/ast-node-types'
@@ -34,12 +33,12 @@ export function getStringNodes(node: ValueNode): LiteralNode[] {
 
 export function fromLiteralNode(
   node: LiteralNode,
-  parent: TxtNode,
-  text: string
+  text: string,
+  offset: number = 0
 ): TxtParentNode {
   const range: TextNodeRange = [
-    parent.range[0] + node.loc!.start.offset,
-    parent.range[0] + node.loc!.end.offset,
+    offset + node.loc!.start.offset,
+    offset + node.loc!.end.offset,
   ]
   const loc: TxtNodeLineLocation = rangeToLineColumn(text, range)
   return {

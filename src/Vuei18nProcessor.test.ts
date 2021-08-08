@@ -8,6 +8,7 @@ import {
   TxtNode,
   TxtNodeLineLocation,
 } from '@textlint/ast-node-types'
+import { findI18nBlock } from './vue-ast'
 
 async function lintFile(
   filePath: string,
@@ -35,6 +36,38 @@ function lintText(
     ],
     rules: [
       { ruleId: 'no-todo', rule: require('textlint-rule-no-todo').default },
+    ],
+  })
+}
+
+function fixText(
+  text: string,
+  options: boolean | TextlintPluginOptions | undefined = true,
+  filePath?: string
+) {
+  const kernel = new TextlintKernel()
+  return kernel.fixText(text, {
+    filePath,
+    ext: '.vue',
+    plugins: [
+      {
+        pluginId: 'vue-i18n',
+        plugin,
+        options,
+      },
+    ],
+    rules: [
+      {
+        ruleId: 'no-nfd',
+        rule: require('textlint-rule-no-nfd'),
+      },
+      {
+        ruleId: 'no-synonyms',
+        rule: require('@textlint-ja/textlint-rule-no-synonyms').default,
+        options: {
+          preferWords: ['ユーザー'],
+        },
+      },
     ],
   })
 }
@@ -146,5 +179,20 @@ describe('Vuei18nProcessor', () => {
     )
     expect(result.messages).not.toEqual([])
     expect(result.messages).toMatchSnapshot()
+  })
+})
+
+describe('with fixer', () => {
+  it('fixes correctly', async () => {
+    const filePath = path.join(__dirname, '..', 'fixtures', 'test-fix.vue')
+    const text = await fsPromises.readFile(filePath, 'utf8')
+    const result = await fixText(text, {}, filePath)
+    const before = JSON.parse(findI18nBlock(text)!.content)
+    const after = JSON.parse(findI18nBlock(result.output)!.content)
+    expect(after.en).toEqual(before.en)
+    expect(after.ja).toEqual({
+      nfd: 'ポケット エンジン',
+      synonyms: 'ユーザーとユーザー',
+    })
   })
 })
