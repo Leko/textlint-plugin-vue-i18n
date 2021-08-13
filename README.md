@@ -18,7 +18,7 @@ Add this plugin into the plugins field in the `.textlintrc`.
 ```json
 {
   "plugins": {
-    "textlint-plugin-vue-i18n": {
+    "vue-i18n": {
       "locales": ["ja"],
       "resources": ["./locales/*.json"]
     }
