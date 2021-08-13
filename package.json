@@ -39,5 +39,7 @@
   },
   "keywords": [
     "textlintplugin"
-  ]
+  ],
+  "repository": "Leko/textlint-plugin-vue-i18n",
+  "license": "MIT"
 }
